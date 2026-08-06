@@ -7,7 +7,6 @@ const notFound = (req, res, next) =>{
 }
 
 const errorHandler = (err, req, res, next) => {
-    console.log(err)
     const message = err.message
     const status = err.status ?? 404
     res.json({

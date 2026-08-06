@@ -15,10 +15,11 @@ export const authenticate = async(req, res, next) => {
         const payload = jwt.verify(accessToken, process.env.access_secret_token)
         console.log(payload)
         // we need to find the user
+        console.log("you are authenticated")
         next()
     }
     catch(err){
+        console.log(err)
         next(err)
     }
-
-} 
+}
