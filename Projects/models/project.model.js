@@ -1,5 +1,25 @@
 import mongoose from "mongoose";
 
+const members = new mongoose.Schema({
+    _id : {type : String, required : true},
+    username : {type: String, required : true},
+},{
+    timestamps : false,
+    versionKey : false,
+    _id : false
+})
+
+
+const project_manager = new mongoose.Schema({
+    _id : {type : String, required : true},
+    username : {type: String, required : true},
+},{
+    timestamps : false,
+    versionKey : false,
+    _id : false
+})
+
+
 const projectSchema = new mongoose.Schema({
     name : {
         type : String,
@@ -10,21 +30,13 @@ const projectSchema = new mongoose.Schema({
         required : false
     },
     project_manager : {
-        type : [{   
-                    _id : false,
-                    project_manager_id : { type : String, required : true},
-                    username : {type : String, required : true}
-                }],
+        type : [project_manager],
         required : false
     },
     members : {
-        type: [{
-                    _id : false,
-                    member_id: {type : String, required : true},
-                    username : {type: String, required : true},
-        }],
+        type: [members],
         required : false
-    }
+    }   
 }, {
     timestamps : true,
     versionKey : false
