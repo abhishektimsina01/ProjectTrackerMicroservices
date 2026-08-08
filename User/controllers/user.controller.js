@@ -6,11 +6,13 @@ import { UserModel } from "../models/user.model.js"
 
 export const userRoutes = async(app, channel) => {
     app.get("/profile", authenticate, authorize("developer", "pm"), getProfile)
+    app.post("/getData", authenticate, getData)
     app.get("/",authenticate, authorize("pm", "developer"), getAllUsers)
     app.get("/:id", authenticate, authorize("pm", "developer"), getUser)
     app.delete("/:id", authenticate, authorize("pm", "developer"), deleteUser)
     app.delete("/", deleteAllUsers)
 }
+
 
 const getProfile = (req, res, next) => {
     try{
@@ -19,7 +21,7 @@ const getProfile = (req, res, next) => {
     catch(err){
         next(err)
     }
-}
+}   
 
 
 const getAllUsers = async(req, res, next) => {
@@ -77,9 +79,32 @@ const deleteAllUsers = async(req, res, next) => {
     const users = await UserModel.find({})
     await UserModel.deleteMany({
         _id : { $exists : true}
-        })
+        })  
         res.json({
             users : users,
             message : "deleted all the users"
         })
+}
+
+
+const getData = async(req, res, next) => {
+    const {project_managers_id, members_id} = req.body
+    let data = {}
+    if(!project_managers_id.length == 0){
+        const project_managers = await UserModel.find({
+            _id : {
+                $in : project_managers_id
+            }
+        }).select("_id username")
+        data.project_managers = project_managers
+    }
+    if(!members_id.length == 0){
+        const members = await UserModel.find({
+            _id : {
+                $in : members_id
+            }
+        }).select("_id username")
+        data.members = members
+    }
+    res.json(data)
 }
